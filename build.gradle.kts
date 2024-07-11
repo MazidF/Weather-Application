@@ -12,7 +12,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    // TODO: Add Ktor required dependencies
+    implementation(libs.bundles.ktor.client)
 }
 
 tasks.test {
