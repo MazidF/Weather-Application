@@ -1,5 +1,7 @@
 package org.example.data.model
 
-class WeatherInfo {
-    // TODO: Adds required fields
-}
+data class WeatherInfo(
+    val location: String,
+    val requestTime: String,
+    val condition: WeatherCondition,
+)
