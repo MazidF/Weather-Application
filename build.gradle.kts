@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 group = "org.example"
@@ -12,7 +13,11 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
+    // Ktor
     implementation(libs.bundles.ktor.client)
+
+    // Json Serialization
+    implementation(libs.kotlinx.serialization.json)
 }
 
 tasks.test {
