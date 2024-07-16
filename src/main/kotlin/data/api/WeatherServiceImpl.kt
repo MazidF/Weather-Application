@@ -14,9 +14,11 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.example.data.api.serializer.WeatherInfoAdapter
 import org.example.data.model.WeatherInfo
 
@@ -33,9 +35,16 @@ class WeatherServiceImpl(
             }
             install(ContentNegotiation) {
                 gson {
+                    setLenient()
                     setPrettyPrinting()
                     registerTypeAdapter(WeatherInfo::class.java, WeatherInfoAdapter())
                 }
+                json(
+                    Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    }
+                )
             }
             defaultRequest {
                 url(BASE_URL)
@@ -45,20 +54,20 @@ class WeatherServiceImpl(
         Dispatchers.IO,
     )
 
-    override suspend fun getWeatherByCity(cityName: String): NetworkResult<WeatherInfo> {
-        return client.get {
+    override suspend fun getWeatherByCity(cityName: String) = withContext(ioDispatcher) {
+        client.get {
             url {
                 parameters.append(QueryParams.QUERY, cityName)
             }
-        }.bodyResult()
+        }.bodyResult<WeatherInfo>()
     }
 
-    override suspend fun getWeatherByLatLong(lat: Float, long: Float): NetworkResult<WeatherInfo> {
-        return client.get {
+    override suspend fun getWeatherByLatLong(lat: Float, long: Float) = withContext(ioDispatcher) {
+        client.get {
             url {
                 parameters.append(QueryParams.QUERY, "$lat,$long")
             }
-        }.bodyResult()
+        }.bodyResult<WeatherInfo>()
     }
 
     private suspend inline fun <reified T> HttpResponse.bodyResult() = withContext(ioDispatcher) {

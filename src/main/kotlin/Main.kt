@@ -1,9 +1,12 @@
 package org.example
 
 import org.example.ui.WeatherApplication
+import org.example.ui.WeatherApplicationImpl
 
 fun main() {
-    val weatherApplication: WeatherApplication = TODO("Use the implemented Singleton class.")
-
-    // TODO: Read user inputs from terminal and call the weatherApplication.executeCommand()
+    val weatherApplication: WeatherApplication = WeatherApplicationImpl.INSTANCE
+    while (true) {
+        val userCommand = readlnOrNull() ?: continue
+        weatherApplication.executeCommand(userCommand)
+    }
 }

@@ -14,15 +14,25 @@ class WeatherInfoAdapter : JsonDeserializer<WeatherInfo> {
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): WeatherInfo? = json?.asJsonObject?.run {
-       return WeatherInfo(
-           location = this["location"].asJsonObject["name"].asString,
-           requestTime = this["location"].asJsonObject["localtime"].asString,
-           condition = with(this["current"].asJsonObject["condition"].asJsonObject) {
-               WeatherCondition(
-                   condition = this["text"].asString,
-                   code = this["code"].asInt,
-               )
-           },
-       )
+        return WeatherInfo(
+            location = this[LOCATION_OBJECT].asJsonObject[NAME_FIELD].asString,
+            requestTime = this[LOCATION_OBJECT].asJsonObject[LOCALE_TIME_FIELD].asString,
+            condition = with(this[CURRENT_OBJECT].asJsonObject[CONDITION_OBJECT].asJsonObject) {
+                WeatherCondition(
+                    text = this[TEXT_FIELD].asString,
+                    code = this[CODE_FIELD].asInt,
+                )
+            },
+        )
+    }
+
+    private companion object {
+        const val LOCATION_OBJECT = "location"
+        const val CURRENT_OBJECT = "current"
+        const val CONDITION_OBJECT = "condition"
+        const val NAME_FIELD = "name"
+        const val TEXT_FIELD = "text"
+        const val CODE_FIELD = "code"
+        const val LOCALE_TIME_FIELD = "localtime"
     }
 }
